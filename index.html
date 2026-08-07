@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P-TECH Alliance — Six Years to a Career</title>
+<meta name="description" content="The P-TECH Alliance strengthens and scales the model that links high school, a competitive no-cost college degree, and a career.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<style>
+
+:root{
+  --navy:#041038;          /* deep ink — brand ground */
+  --navy-2:#0D1F4E;        /* raised navy panel */
+  --royal:#1853F5;         /* NPA royal blue accent */
+  --royal-soft:#3D6FF8;
+  --sky:#DCE9FF;           /* tint for bands */
+  --paper:#F7F9FC;         /* page ground */
+  --ink:#0C1B3D;           /* body text on light */
+  --muted:#5A6B87;
+  --gold:#F5B841;          /* achievement signal — map nodes, counters */
+  --line:#E3E9F4;
+  --maxw:1200px;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:var(--royal);text-decoration:none}
+a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* ---------- type scale ---------- */
+h1,h2,h3{font-weight:600;line-height:1.12;letter-spacing:-0.02em;color:var(--navy)}
+.display{font-size:clamp(2.4rem,5.4vw,4.2rem);font-weight:700}
+h2{font-size:clamp(1.8rem,3.4vw,2.6rem);margin-bottom:.6em}
+h3{font-size:1.25rem;margin-bottom:.4em}
+p.lead{font-size:1.22rem;color:var(--ink)}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.78rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--royal);display:block;margin-bottom:1.1rem}
+.eyebrow.on-dark{color:var(--gold)}
+strong.hl{color:var(--royal);font-weight:700}
+.on-dark strong.hl,.dark strong.hl{color:var(--gold)}
+
+/* ---------- layout ---------- */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+section.band{padding:104px 0}
+section.band.tight{padding:72px 0}
+.band.dark{background:var(--navy);color:#D7E2F5}
+.band.dark h2,.band.dark h3{color:#fff}
+.band.tint{background:var(--sky)}
+.band.white{background:#fff}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+@media(max-width:980px){.grid-4{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr;gap:40px}}
+@media(max-width:640px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr}section.band{padding:72px 0}}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:60;background:rgba(4,16,56,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.10)}
+header .logo{background:#fff;border-radius:8px;padding:7px 12px}
+header .logo img{height:26px}
+.nav{display:flex;align-items:center;justify-content:space-between;height:76px;max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.logo{display:flex;align-items:center}
+.logo img{height:32px;width:auto;display:block}
+footer .logo{background:#fff;border-radius:10px;padding:10px 16px;width:fit-content}
+footer .logo img{height:26px}
+nav.menu{display:flex;gap:34px;align-items:center}
+nav.menu a{color:#C9D6EE;font-weight:500;font-size:.98rem;padding:6px 0;border-bottom:2px solid transparent}
+nav.menu a:hover{color:#fff}
+nav.menu a.active{color:#fff;border-bottom-color:var(--gold)}
+.btn{display:inline-block;background:var(--royal);color:#fff;font-weight:600;padding:13px 26px;border-radius:999px;border:0;cursor:pointer;font-size:.98rem;transition:transform .15s,background .15s}
+.btn:hover{background:var(--royal-soft);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border:1.5px solid rgba(255,255,255,.45);color:#fff}
+.btn.ghost:hover{border-color:#fff;background:rgba(255,255,255,.08)}
+.btn.gold{background:var(--gold);color:var(--navy)}
+.btn.gold:hover{background:#FFCB5C}
+.hamb{display:none;background:none;border:0;cursor:pointer;padding:8px}
+.hamb span{display:block;width:24px;height:2px;background:#fff;margin:5px 0;border-radius:2px}
+@media(max-width:900px){
+  nav.menu{position:fixed;inset:76px 0 auto 0;background:var(--navy);flex-direction:column;gap:0;padding:12px 0 24px;display:none;border-bottom:1px solid rgba(255,255,255,.12)}
+  nav.menu.open{display:flex}
+  nav.menu a{padding:14px 28px;width:100%}
+  .hamb{display:block}
+  .nav .btn{display:none}
+}
+
+/* ---------- hero: split — solid navy text panel + full-bleed photo carousel ---------- */
+.hero{background:var(--navy);color:#fff}
+.hero-split{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);align-items:stretch;min-height:clamp(560px,76vh,760px)}
+.hero-text{display:flex;flex-direction:column;justify-content:center;
+  padding:72px 56px 72px max(28px, calc((100vw - 1200px)/2));}
+.hero-lockup{display:block;margin-bottom:14px}
+.lockup-name{display:block;font-weight:700;color:#fff;line-height:1.02;
+  font-size:clamp(2.5rem,5.4vw,4.2rem);letter-spacing:-.035em}
+.lockup-name em{font-style:normal;color:var(--gold)}
+.hero h1.hero-tag{max-width:16ch;font-size:clamp(1.45rem,2.7vw,2.1rem);font-weight:600;letter-spacing:-.02em;color:#fff;opacity:.94}
+.hero p.lead{color:#E4ECFA;max-width:44ch;margin:1.1rem 0 .5rem;font-size:1.18rem;font-weight:500}
+.hero p.lead strong.hl{color:var(--gold)}
+.hero p.aff{color:#B6C7E6;max-width:48ch;margin-bottom:1.9rem;font-size:1rem}
+.hero .cta-row{display:flex;gap:14px;flex-wrap:wrap}
+.hero-badges{display:flex;gap:34px;margin-top:2.4rem;flex-wrap:wrap}
+.hero-badges div{font-family:'IBM Plex Mono',monospace}
+.hero-badges b{display:block;font-size:1.85rem;color:var(--gold);font-weight:600}
+.hero-badges span{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:#9FB3D8}
+
+/* --- photo carousel: photos shown in full, no scrim over faces --- */
+.hero-media{position:relative;overflow:hidden;min-height:340px}
+.hero-media .slide{position:absolute;inset:0;opacity:0;transition:opacity 1.1s ease}
+.hero-media .slide.on{opacity:1}
+.hero-media .slide img{width:100%;height:100%;object-fit:cover;object-position:center 30%}
+/* feather only the inner edge so the photo meets the navy panel cleanly */
+.hero-media::before{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(90deg, var(--navy) 0%, rgba(4,16,56,.55) 5%, transparent 16%)}
+/* caption strip sits in a dark band at the bottom, never across faces */
+.slide-cap{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:54px 28px 20px;
+  background:linear-gradient(to top, rgba(4,16,56,.92), transparent);
+  font-size:.9rem;color:#E4ECFA;opacity:0;transition:opacity .8s ease}
+.slide.on .slide-cap{opacity:1}
+.slide-cap b{display:block;font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+.hero-dots{position:absolute;right:22px;top:22px;z-index:5;display:flex;gap:9px}
+.hero-dots button{width:9px;height:9px;border-radius:50%;border:0;cursor:pointer;padding:0;
+  background:rgba(255,255,255,.45);transition:background .25s,transform .25s}
+.hero-dots button[aria-selected="true"]{background:var(--gold);transform:scale(1.35)}
+@media(max-width:980px){
+  .hero-split{grid-template-columns:1fr;min-height:0}
+  .hero-text{padding:56px 28px 48px;order:1}
+  .hero-media{order:2;height:60vw;max-height:420px;min-height:280px}
+  .hero-media::before{background:linear-gradient(180deg, var(--navy) 0%, rgba(4,16,56,.5) 4%, transparent 14%)}
+}
+/* ---------- stat counters ---------- */
+.counters{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;text-align:center}
+@media(max-width:900px){.counters{grid-template-columns:repeat(2,1fr)}}
+.counter b{font-family:'IBM Plex Mono',monospace;font-size:clamp(2.4rem,4.6vw,3.6rem);font-weight:600;color:var(--royal);display:block;line-height:1.1}
+.band.dark .counter b{color:var(--gold)}
+.counter span{font-size:.95rem;color:var(--muted);font-weight:500}
+.band.dark .counter span{color:#9FB3D8}
+
+/* ---------- cards ---------- */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s}
+.card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -18px rgba(11,31,63,.25)}
+.card .ph{aspect-ratio:4/3}
+.card .body{padding:26px;flex:1;display:flex;flex-direction:column;gap:.5rem}
+.card .body p{color:var(--muted);font-size:.97rem;flex:1}
+.card .go{font-weight:600;font-size:.95rem}
+.card .go::after{content:" →"}
+
+/* photo placeholders — elegant frames Diallo can swap for real imagery */
+.ph{background:linear-gradient(140deg,#16345F,#1D4ED8 120%);position:relative;display:grid;place-items:center}
+.ph::before{content:attr(data-label);font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.65);text-align:center;padding:0 14px}
+.ph.alt{background:linear-gradient(140deg,#0B1F3F,#3B6FE8 130%)}
+.ph.warm{background:linear-gradient(140deg,#1D4ED8,#F5B841 190%)}
+
+/* ---------- big scale sentence (impact) ---------- */
+.scale-sentence{font-size:clamp(1.9rem,4vw,3.1rem);font-weight:600;line-height:1.25;letter-spacing:-0.02em;color:var(--navy);max-width:26ch}
+.scale-sentence b{color:var(--royal)}
+.band.dark .scale-sentence{color:#fff}
+.band.dark .scale-sentence b{color:var(--gold)}
+
+/* ---------- pull quote ---------- */
+.pullquote{max-width:820px;margin:0 auto;text-align:center}
+.pullquote blockquote{font-size:clamp(1.4rem,2.8vw,2rem);font-weight:500;line-height:1.4;color:var(--navy);letter-spacing:-0.01em}
+.pullquote blockquote::before,.pullquote blockquote::after{color:var(--gold);font-size:1.6em;line-height:0;vertical-align:-0.3em}
+.pullquote blockquote::before{content:"“";margin-right:.08em}
+.pullquote blockquote::after{content:"”";margin-left:.06em}
+.pullquote cite{display:block;margin-top:1.6rem;font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- credo list ---------- */
+.credo{list-style:none;display:grid;gap:18px}
+.credo li{padding:22px 26px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--royal);border-radius:10px;font-size:1.05rem}
+.credo li b{color:var(--navy)}
+
+/* ---------- accordion (impact programs) ---------- */
+.acc{border-top:1px solid var(--line)}
+.acc-item{border-bottom:1px solid var(--line)}
+.acc-item button{width:100%;background:none;border:0;text-align:left;padding:26px 8px;display:flex;justify-content:space-between;align-items:center;gap:20px;cursor:pointer;font-family:inherit}
+.acc-item button h3{margin:0;font-size:1.3rem}
+.acc-item button .tag{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.16em;color:var(--royal);text-transform:uppercase}
+.acc-item .chev{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--royal);display:grid;place-items:center;color:var(--royal);transition:transform .2s;font-size:.9rem}
+.acc-item.open .chev{transform:rotate(45deg)}
+.acc-item .panel{display:none;padding:0 8px 30px;max-width:760px;color:var(--muted)}
+.acc-item.open .panel{display:block}
+
+/* ---------- timeline ---------- */
+.timeline{display:grid;gap:0;position:relative;margin-top:1rem}
+.timeline::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.t-item{position:relative;padding:0 0 30px 42px}
+.t-item::before{content:"";position:absolute;left:2px;top:6px;width:16px;height:16px;border-radius:50%;background:var(--gold);border:3px solid #fff;box-shadow:0 0 0 2px var(--gold)}
+.t-item b{font-family:'IBM Plex Mono',monospace;color:var(--royal);font-size:.85rem;letter-spacing:.1em;display:block;margin-bottom:.2rem}
+
+/* ---------- footer / bands ---------- */
+.news-band{background:var(--navy-2);border-radius:20px;padding:56px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center;color:#fff}
+@media(max-width:900px){.news-band{grid-template-columns:1fr;padding:40px 28px}}
+.news-band h2{color:#fff}
+.news-band form{display:flex;gap:12px;flex-wrap:wrap}
+.news-band input{flex:1;min-width:220px;padding:14px 18px;border-radius:999px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;font-family:inherit;font-size:.98rem}
+.news-band input::placeholder{color:#9FB3D8}
+.mc-form{position:relative}
+.mc-msg{flex-basis:100%;margin-top:10px;font-size:.92rem;font-weight:500;color:#BFD0EC;min-height:1px}
+.mc-msg.ok{color:var(--gold);font-weight:600}
+.mc-msg.err{color:#FFB4A8}
+.mc-form.sending button{opacity:.65;pointer-events:none}
+footer{background:var(--navy);color:#9FB3D8;padding:72px 0 40px;font-size:.95rem}
+footer h4{color:#fff;font-size:.85rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;margin-bottom:1.1rem;font-weight:600}
+footer a{color:#C9D6EE;display:block;padding:4px 0}
+footer a:hover{color:#fff}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:44px;padding-bottom:44px;border-bottom:1px solid rgba(255,255,255,.12)}
+@media(max-width:900px){.foot-grid{grid-template-columns:1fr 1fr}}
+.foot-meta{display:flex;justify-content:space-between;gap:20px;padding-top:26px;flex-wrap:wrap;font-size:.85rem;color:#7D91B8}
+
+/* ---------- charts & maps ---------- */
+.chart-panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:34px}
+.chart-panel h3{margin-bottom:1.4rem}
+#usMap svg{width:100%;height:auto}
+.state{fill:#E7EEF9;stroke:#fff;stroke-width:1}
+.state.engaged{fill:var(--royal)}
+.state.model{fill:var(--gold)}
+.map-key{display:flex;gap:26px;font-size:.86rem;color:var(--muted);margin-top:14px;flex-wrap:wrap}
+.map-key i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:8px;vertical-align:-2px}
+
+/* ---------- pages / router ---------- */
+.page{display:none}
+.page.active{display:block}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+.section-head{max-width:720px;margin-bottom:56px}
+.section-head.center{margin-left:auto;margin-right:auto;text-align:center}
+
+/* ---------- about tabs ---------- */
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 44px}
+.tabs button{font-family:inherit;font-size:.95rem;font-weight:600;padding:11px 22px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;transition:all .15s}
+.tabs button:hover{border-color:var(--royal);color:var(--royal)}
+.tabs button.active{background:var(--royal);border-color:var(--royal);color:#fff}
+.tabpane{display:none}
+.tabpane.active{display:block}
+/* news clippings */
+.clip{display:flex;gap:22px;align-items:baseline;padding:24px 8px;border-bottom:1px solid var(--line)}
+.clip .src{flex:none;width:170px;font-family:'IBM Plex Mono',monospace;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--royal)}
+.clip h3{margin:0 0 .25rem;font-size:1.12rem}
+.clip p{color:var(--muted);font-size:.95rem}
+@media(max-width:640px){.clip{flex-direction:column;gap:6px}.clip .src{width:auto}}
+/* people cards */
+.person{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+.person .role{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--royal);display:block;margin-bottom:.5rem}
+.person p{color:var(--muted);font-size:.95rem;margin-top:.5rem}
+/* story cards */
+.story .ph{aspect-ratio:1/1}
+
+/* ---------- audience tiles (Get Involved) ---------- */
+.tile{aspect-ratio:16/10;display:grid;place-items:center;position:relative;overflow:hidden}
+.tile svg{width:76px;height:76px;stroke:#fff;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:.95;position:relative;z-index:2}
+.tile::after{content:"";position:absolute;inset:0;background:radial-gradient(120px 120px at 82% 18%,rgba(255,255,255,.16),transparent 70%)}
+.tile-a{background:linear-gradient(135deg,#041038,#1853F5)}
+.tile-b{background:linear-gradient(135deg,#1853F5,#3D6FF8)}
+.tile-c{background:linear-gradient(135deg,#0D1F4E,#1853F5 85%)}
+.tile-d{background:linear-gradient(135deg,#1853F5,#0D1F4E)}
+
+
+.modal-actions .alt{background:none;border:0;font-family:inherit;color:var(--royal);cursor:pointer;padding:6px 2px;text-decoration:underline;text-underline-offset:3px}
+.mailpanel{margin-top:16px;padding:16px 18px;background:var(--sky);border-radius:12px}
+.mailrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.mailrow code{font-family:'IBM Plex Mono',monospace;font-size:1rem;color:var(--navy);font-weight:500;
+  background:#fff;padding:8px 12px;border-radius:8px;border:1px solid var(--line);flex:1;min-width:200px;
+  user-select:all;-webkit-user-select:all}
+.copybtn{border:1.5px solid var(--royal);background:#fff;color:var(--royal);font-family:inherit;font-weight:600;
+  font-size:.88rem;padding:8px 16px;border-radius:999px;cursor:pointer;transition:all .15s;flex:none}
+.copybtn:hover{background:var(--royal);color:#fff}
+.copybtn.done{background:var(--royal);color:#fff;border-color:var(--royal)}
+.maillinks{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.maillinks a{font-size:.86rem;font-weight:600;background:#fff;border:1px solid var(--line);
+  padding:7px 14px;border-radius:999px;color:var(--royal);transition:border-color .15s}
+.maillinks a:hover{border-color:var(--royal)}
+@media(max-width:640px){.mailrow code{min-width:0;font-size:.9rem}}
+/* ---------- audience modal ---------- */
+.card.audience{cursor:pointer}
+.card.audience:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.modal-backdrop{position:fixed;inset:0;z-index:200;background:rgba(4,16,56,.62);backdrop-filter:blur(4px);
+  display:none;align-items:center;justify-content:center;padding:28px;opacity:0;transition:opacity .22s ease}
+.modal-backdrop.open{display:flex}
+.modal-backdrop.shown{opacity:1}
+.modal{background:#fff;border-radius:18px;max-width:620px;width:100%;max-height:88vh;overflow-y:auto;
+  box-shadow:0 50px 100px -30px rgba(4,16,56,.55);transform:translateY(14px);transition:transform .22s ease;position:relative}
+.modal-backdrop.shown .modal{transform:none}
+.modal-head{background:linear-gradient(135deg,var(--navy),var(--royal));color:#fff;padding:34px 36px 30px;border-radius:18px 18px 0 0}
+.modal-head .eyebrow{color:var(--gold);margin-bottom:.7rem}
+.modal-head h2{color:#fff;font-size:1.75rem;margin-bottom:.5rem}
+.modal-head p{color:#DCE9FF;font-size:1.02rem;margin:0}
+.modal-body{padding:30px 36px 34px}
+.modal-body p{color:var(--muted);margin-bottom:1.4rem;font-size:1rem}
+.modal-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.modal-actions .btn{flex:none}
+.modal-actions .alt{font-size:.94rem;font-weight:600}
+.modal-close{position:absolute;top:16px;right:16px;width:38px;height:38px;border-radius:50%;border:0;cursor:pointer;
+  background:rgba(255,255,255,.18);color:#fff;font-size:1.5rem;line-height:1;display:grid;place-items:center;transition:background .18s}
+.modal-close:hover{background:rgba(255,255,255,.32)}
+.modal-note{margin-top:1.5rem;padding-top:1.1rem;border-top:1px solid var(--line);font-size:.86rem;color:var(--muted)}
+@media(max-width:640px){
+  .modal-backdrop{padding:0;align-items:flex-end}
+  .modal{max-width:none;max-height:92vh;border-radius:18px 18px 0 0}
+  .modal-head{border-radius:18px 18px 0 0;padding:28px 22px 24px}
+  .modal-head h2{font-size:1.45rem}
+  .modal-body{padding:24px 22px 30px}
+  .modal-actions .btn{width:100%;text-align:center}
+}
+body.modal-open{overflow:hidden}
+.story .loc{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--royal)}
+/* ---------- photo slots with caption + credit ---------- */
+figure{margin:0}
+figure img{width:100%;height:auto;display:block;border-radius:14px;object-fit:cover}
+figure.ratio-43 img{aspect-ratio:4/3}
+figure.ratio-11 img{aspect-ratio:1/1}
+figcaption{font-size:.84rem;color:var(--muted);margin-top:10px;line-height:1.45}
+figcaption .credit{display:block;font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#8494AE;margin-top:4px}
+.card figure img{border-radius:0}
+.card figure figcaption{padding:0 26px}
+/* ---------- expandable staff/board cards ---------- */
+.person{cursor:pointer;transition:box-shadow .18s,border-color .18s}
+.person:hover{border-color:var(--royal);box-shadow:0 14px 34px -20px rgba(4,16,56,.3)}
+.person .headshot{width:96px;height:96px;border-radius:50%;object-fit:cover;margin-bottom:18px;background:var(--sky)}
+.person .headshot.initials{display:grid;place-items:center;font-family:'IBM Plex Mono',monospace;
+  font-weight:600;font-size:1.5rem;color:#fff;letter-spacing:.04em;
+  background:linear-gradient(135deg,var(--navy),var(--royal))}
+.person .more{display:none;margin-top:.9rem;border-top:1px solid var(--line);padding-top:.9rem}
+.person.open .more{display:block}
+.person .toggle{margin-top:1rem;font-weight:600;font-size:.9rem;color:var(--royal);display:inline-flex;align-items:center;gap:6px}
+.person .toggle::after{content:"\002B";font-size:1.05rem;line-height:1}
+.person.open .toggle::after{content:"\2212"}
+.person .more p{margin-bottom:.7rem}
+.person.static{cursor:default}
+.person.static:hover{border-color:var(--line);box-shadow:none}
+/* ---------- deep background link ---------- */
+.deep-link{display:inline-block;margin-top:1.6rem;font-weight:700;font-size:1.05rem;color:var(--royal);border-bottom:2px solid var(--royal);padding-bottom:2px}
+.prose{max-width:74ch}
+.prose p{color:var(--muted);margin-bottom:1.15rem}
+.prose h3{margin-top:2rem}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="#/" aria-label="P-TECH Alliance home"><img src="data:image/png;base64,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" alt="P-TECH"></a>
+    <nav class="menu" id="menu">
+      <a href="#/about" data-nav="about">About Us</a>
+      <a href="#/history" data-nav="history">History</a>
+      <a href="#/research" data-nav="research">Research &amp; Data</a>
+      <a href="#/get-involved" data-nav="get-involved">Get Involved</a>
+    </nav>
+    <a class="btn gold" href="#/get-involved">Partner with us</a>
+    <button class="hamb" id="hamb" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+<!-- ============================================== HOME -->
+<div class="page" id="page-home">
+
+  <section class="hero">
+    <div class="hero-split">
+      <div class="hero-text">
+        <div class="hero-lockup">
+          <span class="lockup-name">P&#8209;TECH <em>Alliance</em></span>
+        </div>
+        <h1 class="hero-tag">One model. Six years to a career.</h1>
+        <p class="lead">Every student deserves a <strong class="hl">competitive, no-cost college degree</strong> and a <strong class="hl">clear path to a career.</strong></p>
+        <p class="aff">The Pathways in Technology Early College High School model (P-TECH) makes college affordable by design: students graduate with a high school diploma, an associate degree at no cost to their families, and real workplace experience &#8212; all in one seamless pathway.</p>
+        <div class="cta-row">
+          <a class="btn" href="#/about">Explore the model</a>
+          <a class="btn ghost" href="#/get-involved">Join our mailing list</a>
+        </div>
+        <div class="hero-badges">
+          <div><b data-count="11">0</b><span>U.S. States</span></div>
+          <div><b data-count="600" data-suffix="+">0</b><span>Schools worldwide</span></div>
+          <div><b data-count="28">0</b><span>Countries</span></div>
+        </div>
+      </div>
+
+      <div class="hero-media" id="heroMedia">
+        <div class="slide on"><img src="images/slide-joy.jpg" alt="P-TECH graduates celebrating at commencement">
+          <div class="slide-cap"><b>The Promise</b>Graduates cross the stage with a diploma, a degree, and a job offer.</div></div>
+        <div class="slide"><img src="images/slide-brand.jpg" alt="P-TECH students gathered with the P-TECH banner">
+          <div class="slide-cap"><b>The Network</b>Students from across the P-TECH network &#8212; 600 schools in 28 countries.</div></div>
+        <div class="slide"><img src="images/slide-legacy.jpg" alt="Graduation procession at the Paul Robeson building in Brooklyn, home of the first P-TECH">
+          <div class="slide-cap"><b>The Legacy</b>Brooklyn&#8217;s Paul Robeson building &#8212; where the first P-TECH opened in 2011.</div></div>
+        <div class="hero-dots" role="tablist" aria-label="Hero images">
+          <button role="tab" aria-selected="true"  aria-label="The Promise"></button>
+          <button role="tab" aria-selected="false" aria-label="The Network"></button>
+          <button role="tab" aria-selected="false" aria-label="The Legacy"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- map now has its own light section, where the card reads cleanly -->
+  <section class="band white">
+    <div class="wrap split">
+      <div class="reveal">
+        <span class="eyebrow">Our Reach</span>
+        <h2>Where P-TECH is now</h2>
+        <p class="lead" style="margin-bottom:1rem">The model has spread from a single Brooklyn classroom to schools across 11 U.S. states and 28 countries.</p>
+        <p style="color:var(--muted);margin-bottom:1.8rem">The Alliance works alongside states, districts, community colleges, and employers to launch new schools and strengthen the ones already running.</p>
+        <a class="btn" href="#/history">Read our history</a>
+      </div>
+      <div class="reveal">
+        <div class="chart-panel">
+          <h3>P-TECH across the United States</h3>
+          <div id="usMap"></div>
+          <p class="note" style="font-size:.84rem;color:var(--muted);margin-top:12px">Highlighted states have P-TECH schools operating today.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band white">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">How It Works</span>
+        <h2>One connected path, grades 9–14</h2>
+        <p class="lead">Open to any student — no admission test, no cost for college — combining high school, an associate degree, and workplace experience.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card reveal"><div class="body"><span class="eyebrow" style="margin-bottom:.4rem">Step 1</span><h3>High school + college</h3><p>Students begin earning college credit in high school through aligned coursework, avoiding costly remedial college classes.</p></div></div>
+        <div class="card reveal"><div class="body"><span class="eyebrow" style="margin-bottom:.4rem">Step 2</span><h3>Industry partnership</h3><p>Mentoring, worksite visits, and paid internships with employer partners throughout the pathway.</p></div></div>
+        <div class="card reveal"><div class="body"><span class="eyebrow" style="margin-bottom:.4rem">Step 3</span><h3>Degree + first in line for a job</h3><p>Graduates finish with a competitive associate degree, debt-free, and first-in-line consideration for jobs.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band tint">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">News &amp; Insights</span>
+        <h2>P-TECH in the conversation</h2>
+      </div>
+      <div class="grid-3">
+        <div class="card reveal">
+          <figure><img src="images/forbes-ai-workforce.jpg" alt="Forbes feature on connecting education to jobs and the AI workforce transition" loading="lazy"></figure>
+          <div class="body"><h3>P-TECH and the AI economy</h3><p>In Forbes, AI expert Paulo Carvão makes the case that P-TECH is the model for America's AI workforce transition — connecting education to jobs and economic growth.</p><a class="go" href="https://www.forbes.com/sites/paulocarvao/2026/07/01/connect-education-to-jobs-and-create-an-ai-workforce-transition-system/" target="_blank" rel="noopener">Read in Forbes</a></div>
+        </div>
+        <div class="card reveal">
+          <figure><img src="images/breaking-barriers.jpg" alt="Cover of Breaking Barriers by Stan Litow and Tina Kelley" loading="lazy"></figure>
+          <div class="body"><h3>Breaking Barriers</h3><p>Stan Litow and Tina Kelley tell the story of the school model rethinking the path from school to work.</p><a class="go" href="https://www.tcpress.com/products/breaking-barriers_9780807765586" target="_blank" rel="noopener">About the book</a></div>
+        </div>
+        <div class="card reveal">
+          <figure><img src="images/ri-graduates.jpg" alt="North Providence P-TECH students who earned associate degrees before their high school diplomas" loading="lazy"></figure>
+          <div class="body"><h3>P-TECH students earn degrees before diplomas</h3><p>Rhode Island high school seniors earn associate&#8217;s degrees from Community College of Rhode Island before their official high school graduation.</p><a class="go" href="https://www.valleybreeze.com/news/north_providence/eight-north-providence-p-tech-students-earn-degrees-before-diplomas/article_57cc365a-7081-4f9a-b284-fee789b2ec1f.html" target="_blank" rel="noopener">Read their story</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band tight">
+    <div class="wrap">
+      <div class="news-band reveal">
+        <div>
+          <span class="eyebrow on-dark">Stay Connected</span>
+          <h2>Sign up for our newsletter</h2>
+          <p style="color:#BFD0EC">News from the network, research briefs, and stories from students six years ahead of the curve.</p>
+        </div>
+        <form class="mc-form" data-source="homepage" novalidate>
+          <input type="email" name="EMAIL" required placeholder="Email address" aria-label="Email address">
+          <button class="btn gold" type="submit">Sign up</button>
+          <div style="position:absolute;left:-5000px" aria-hidden="true"><input type="text" name="b_4e294fd788f48778ee6267dd9_f5afcaa44f" tabindex="-1" value=""></div>
+          <p class="mc-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================================== ABOUT US -->
+<div class="page" id="page-about">
+  <section class="band dark tight">
+    <div class="wrap">
+      <span class="eyebrow on-dark">About Us</span>
+      <h1 class="display" style="color:#fff">The P-TECH Alliance</h1>
+      <p class="lead" style="color:#BFD0EC;max-width:56ch;margin-top:1rem">The intermediary that strengthens, scales, and modernizes the P-TECH model — so every student can move from high school to a no-cost degree to a real career.</p>
+    </div>
+  </section>
+
+  <section class="band white">
+    <div class="wrap">
+      <div class="tabs" role="tablist">
+        <button class="active" data-tab="mission">Mission</button>
+        <button data-tab="news">P-TECH in the News</button>
+        <button data-tab="board">Board</button>
+        <button data-tab="staff">Staff</button>
+      </div>
+
+      <div class="tabpane active" id="tab-mission">
+        <div class="split">
+          <div>
+            <span class="eyebrow">Our Mission</span>
+            <h2>Strengthen, scale, and modernize</h2>
+            <p class="lead" style="margin-bottom:1.2rem">Accelerate the design, launch, improvement, and expansion of high-fidelity P-TECH programs nationwide and globally.</p>
+            <p style="color:var(--muted);margin-bottom:1rem"><b>Our vision:</b> every student with a seamless pathway from high school to degree to career.</p>
+            <p style="color:var(--muted)">The Alliance was entrusted with the P-TECH name and ptech.org by IBM, and is a registered 501(c)(3) nonprofit organization.</p>
+          </div>
+          <figure class="ratio-43 reveal"><img src="images/ptech-commencement.jpg" alt="P-TECH graduates at commencement" loading="lazy"><figcaption>A P-TECH graduate receives an associate degree at the New York City College of Technology commencement.</figcaption></figure>
+        </div>
+      </div>
+
+      <div class="tabpane" id="tab-news">
+        <span class="eyebrow">P-TECH in the News</span>
+        <h2>What others are writing about P-TECH</h2>
+        <div style="margin-top:2rem">
+          <div class="clip"><span class="src">Forbes · July 2026</span><div><h3>Connect education to jobs — and create an AI workforce transition plan</h3><p>Harvard Senior Fellow and AI expert Paulo Carvão argues that P-TECH offers the proven framework for America's AI workforce transition, linking education, employers, and economic growth.</p><a class="go" href="https://www.forbes.com/sites/paulocarvao/2026/07/01/connect-education-to-jobs-and-create-an-ai-workforce-transition-system/" target="_blank" rel="noopener">Read the article</a></div></div>
+          <div class="clip"><span class="src">State of the Union · 2013</span><div><h3>President Obama spotlights P-TECH</h3><p>The President pointed to the Brooklyn school as a national model in his address to Congress.</p><a class="go" href="https://obamawhitehouse.archives.gov/the-press-office/2013/02/12/president-barack-obamas-state-union-address-prepared-delivery/" target="_blank" rel="noopener">Read the address</a></div></div>
+          <div class="clip"><span class="src">Time</span><div><h3>The school that is changing American education</h3><p>Time's feature on how P-TECH rewires the path from ninth grade to a career.</p><a class="go" href="https://time.com/10038/the-school-that-is-changing-american-education/" target="_blank" rel="noopener">Read the story</a></div></div>
+          <div class="clip"><span class="src">Teachers College Press</span><div><h3>Breaking Barriers</h3><p>The book behind the model, by P-TECH co-founder Stan Litow and Tina Kelley.</p><a class="go" href="https://www.tcpress.com/products/breaking-barriers_9780807765586" target="_blank" rel="noopener">About the book</a></div></div>
+          <div class="clip"><span class="src">Coming Soon</span><div><h3>Recent coverage</h3><p>New reporting on P-TECH and the college affordability conversation — added as stories publish.</p></div></div>
+        </div>
+      </div>
+
+      <div class="tabpane" id="tab-board">
+        <span class="eyebrow">Board of Directors</span>
+        <h2>Governance</h2>
+        <p style="color:var(--muted);max-width:60ch;margin-bottom:1rem">Click any profile to read more.</p>
+        <div class="grid-3" style="margin-top:1.4rem">
+
+          <div class="person reveal" tabindex="0" role="button" aria-expanded="false">
+            <img class="headshot" src="images/stan-litow.jpg" alt="Stan Litow" loading="lazy">
+            <span class="role">Board Chair</span>
+            <h3>Stan Litow</h3>
+            <p>Co-founder of P-TECH. Stan designed the grades 9&#8211;14 P-TECH model that opened in Brooklyn in 2011 and now spans the globe.</p>
+            <div class="more">
+              <p>Co-author of <i>Breaking Barriers</i>, Stan Litow is a professor at Columbia University&#8217;s School of International and Public Affairs. He previously taught at Duke University, where he also served as Innovator in Residence.</p>
+              <p>Earlier in his career, he served as Deputy Schools Chancellor for New York City Public Schools, the largest K&#8211;12 system in the United States. He later joined IBM, where he served as president of the IBM Foundation and vice president in charge of global Corporate Social Responsibility and Corporate Affairs.</p>
+              <p>He serves as a trustee of the State University of New York, the largest public postsecondary institution in the United States, where he chairs the Academic Affairs Committee.</p>
+            </div>
+            <span class="toggle">Read full bio</span>
+          </div>
+
+          <div class="person reveal" tabindex="0" role="button" aria-expanded="false">
+            <img class="headshot" src="images/diallo-shabazz.jpg" alt="Diallo Shabazz" loading="lazy">
+            <span class="role">Board President and Executive Director</span>
+            <h3>Diallo Shabazz</h3>
+            <p>A non-profit executive, global education advisor, and sustainability expert, Diallo has worked across four continents to advance career-connected learning and the future of work.</p>
+            <div class="more">
+              <p>Diallo Shabazz brings deep expertise in corporate engagement, multi-stakeholder management, and workforce development. He has advised the founding teams behind several models of social innovation that now serve as national and global standards for public-private partnership &#8212; among them IBM&#8217;s P-TECH model, the Brooklyn STEAM Center, the CUNY College of Labor and Urban Studies, New York City&#8217;s Apprenticeship Accelerator in the Office of the Mayor, and the George Lucas Museum of Narrative Art.</p>
+              <p>For the past six years he has led the New York P-TECH Leadership Council, providing policy advisement, program development, and technical assistance to SUNY colleges, the New York State Education Department, the Board of Regents, school districts, and the employer partners supporting more than fifty P-TECH schools statewide. Since 2020 he has led the expansion of New York P-TECH from 42 to 56 programs. His multi-stakeholder engagement strategy recruited Micron to launch the first P-TECH semiconductor manufacturing program and brought the New York Power Authority into partnership with schools on energy, cybersecurity, and hydroponics.</p>
+              <p>On the international stage, Diallo has advised government ministries across Europe, the Middle East, and Africa. He served as a fellow at the National Committee on U.S.-China Relations, and from 2011 to 2013 was appointed a North American Civil Society Representative to the United Nations Environment Programme, supporting ministerial-level meetings on the U.N.&#8217;s Post-2015 Agenda and the creation of the Sustainable Development Goals. He was a delegate to the UNECE Regional Meeting in Switzerland, the UNEP Governing Council Global Forum in Kenya, and the U.N. Sustainable Development Conference (Rio+20) in Brazil.</p>
+              <p>He previously served as Senior Director of Career and Technical Education at New York City Public Schools, leading a portfolio of 318 programs across 135 schools, and as Chief Administrator of the District Council 37 Education Fund &#8212; one of the largest municipal training funds in the country, serving 150,000 employees across more than 1,000 job titles &#8212; where he quadrupled annual revenue and digitized operations in his first two years. In 2015 he served on the New York State Board of Regents Blue Ribbon Committee that created the nation&#8217;s first statewide My Brother&#8217;s Keeper Initiative, securing $20M to improve education for boys and young men of color.</p>
+              <p>He began his career as Regional Director of the NAACP&#8217;s Youth &amp; College Division for the northeast United States, and has served on board committees and advisory councils for the Metropolitan Museum of Art, the NAACP National Board of Directors, and the AI-education company Stemuli. He has been featured in <i>Forbes</i> and <i>The New York Times</i>, and lives in New York with his wife and two daughters.</p>
+            </div>
+            <span class="toggle">Read full bio</span>
+          </div>
+
+          <div class="person reveal" tabindex="0" role="button" aria-expanded="false">
+            <img class="headshot" src="images/chris-caine.jpg" alt="Chris Caine" loading="lazy">
+            <span class="role">Board Member</span>
+            <h3>Chris Caine</h3>
+            <p>President of the Center for Global Enterprise and President &amp; CEO of Mercator XXI, with more than 45 years of experience in government and public affairs across 65 countries.</p>
+            <div class="more">
+              <p>Christopher G. Caine is President of the Center for Global Enterprise, a New York&#8211;based nonprofit dedicated to the study of the contemporary corporation in the era of global economic integration. He is also President and CEO of Mercator XXI, LLC, a professional services firm helping clients engage the global economy.</p>
+              <p>Prior to 2009, Mr. Caine spent 25 years at IBM, including thirteen years with corporate responsibility for global public policy as Vice President, Governmental Programs. He also served as IBM&#8217;s Director of Human Resources and Environmental Policy, with responsibility for health care reform, labor, health and safety, environment, and energy policy. Earlier, he worked for the Coca-Cola Company, the Eaton Corporation, and the Electronic Industries Association.</p>
+              <p>He has spoken before the United States Congress, the World Economic Forum, the World Knowledge Forum in Seoul, the Shanghai International Forum, the Congressional Black Caucus Foundation, and the Centre for Corporate Public Affairs in Sydney, among many others.</p>
+              <p>Mr. Caine serves as a senior adviser for technology and public policy to the Center for Strategic and International Studies and is a Fellow of the International Academy of Management. He sits on the boards of the Information Technology and Innovation Foundation, the Economic Club of Washington DC, the Institute for Education, the Ambassador Theater, and BrainFood. A guest lecturer at Lafayette College and Georgetown University, he created the Caine Scholar&#8217;s Award for Global Leadership, Business and Policy at Lafayette College in 2008.</p>
+            </div>
+            <span class="toggle">Read full bio</span>
+          </div>
+
+          <div class="person static reveal" style="display:grid;place-items:center;text-align:center;color:var(--muted)"><p>Additional directors<br>to be announced.</p></div>
+        </div>
+      </div>
+
+      <div class="tabpane" id="tab-staff">
+        <span class="eyebrow">Staff</span>
+        <h2>Our team</h2>
+        <p style="color:var(--muted);max-width:60ch;margin-bottom:1rem">Click any profile to read more.</p>
+        <div class="grid-3" style="margin-top:1.4rem">
+
+          <div class="person reveal" tabindex="0" role="button" aria-expanded="false">
+            <img class="headshot" src="images/diallo-shabazz.jpg" alt="Diallo Shabazz" loading="lazy">
+            <span class="role">Executive Director</span>
+            <h3>Diallo Shabazz</h3>
+            <p>Diallo leads the Alliance&#8217;s national strategy, state partnerships, corporate engagement, and global expansion.</p>
+            <div class="more">
+              <p>A non-profit executive, global education advisor, and sustainability expert, Diallo has worked across four continents over two decades to advance career-connected learning, sustainable development, and the future of work. He has advised the founding teams behind IBM&#8217;s P-TECH model, the Brooklyn STEAM Center, the CUNY College of Labor and Urban Studies, and New York City&#8217;s Apprenticeship Accelerator.</p>
+              <p>For six years he led the New York P-TECH Leadership Council, supporting SUNY colleges, the State Education Department, the Board of Regents, districts, and employers across more than fifty P-TECH schools &#8212; growing the state network from 42 to 56 programs since 2020. He recruited Micron to launch the first P-TECH semiconductor manufacturing program and brought the New York Power Authority into school partnerships on energy, cybersecurity, and hydroponics.</p>
+              <p>Internationally, he has advised government ministries across Europe, the Middle East, and Africa, served as a fellow at the National Committee on U.S.-China Relations, and was appointed a North American Civil Society Representative to the United Nations Environment Programme, supporting the ministerial meetings that shaped the Sustainable Development Goals as a delegate in Switzerland, Kenya, and Brazil.</p>
+              <p>He also leads Braven Solutions, which has directed strategic planning for the New York Governor&#8217;s $80M Advanced Manufacturing training facility in Syracuse, advised the NYC Mayor&#8217;s Office on restructuring its $900M workforce development ecosystem, and managed the design of Fordham University&#8217;s Bronx Green Jobs Center, opening in Fall 2026.</p>
+              <p>Earlier he served as Senior Director of Career and Technical Education at New York City Public Schools, overseeing 318 programs across 135 schools, and as Chief Administrator of the DC 37 Education Fund, serving 150,000 employees across 1,000 job titles. He began his career as Regional Director of the NAACP&#8217;s Youth &amp; College Division and has been featured in <i>Forbes</i> and <i>The New York Times</i>.</p>
+            </div>
+            <span class="toggle">Read full bio</span>
+          </div>
+
+          <div class="person reveal" tabindex="0" role="button" aria-expanded="false">
+            <img class="headshot" src="images/tina-kelley.jpg" alt="Tina Kelley" loading="lazy">
+            <span class="role">Senior Director, Engagement &amp; Communications</span>
+            <h3>Tina Kelley</h3>
+            <p>Tina leads the Alliance&#8217;s storytelling, communications, state strategy, and public engagement.</p>
+            <div class="more">
+              <p>Co-author of <i>Breaking Barriers</i>, the book that tells the story of the P-TECH model, Tina brings a reporter&#8217;s standard for accuracy to the Alliance&#8217;s public voice.</p>
+              <p>She spent ten years as a reporter for <i>The New York Times</i>, where she contributed to the &#8220;Portraits of Grief&#8221; series, part of a staff Pulitzer Prize for Public Service. She is also the author of several collections of poetry and co-author of <i>Almost Home</i>, on youth homelessness.</p>
+              <p>She was a US@250 Fellow with New America, was senior education reporter at NJ.com/<i>The Star-Ledger</i>, and also worked at <i>The Seattle Times</i>, <i>The Seattle Post-Intelligencer</i>, and <i>The Philadelphia Inquirer</i>. Her articles have appeared in The Atlantic.com, <i>The Christian Science Monitor</i>, <i>Audubon</i>, <i>Orion</i>, <i>People</i>, <i>The Progressive</i>, and other publications. Her honors include a National Association of Black Journalists Salute to Excellence award, the Washington State Book Award, and the New Jersey Poets Prize.</p>
+              <p>At the Alliance she leads communications, press relations, and the organization&#8217;s state engagement work, including the Maryland partnership with the state Department of Education.</p>
+            </div>
+            <span class="toggle">Read full bio</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================================== HISTORY -->
+<div class="page" id="page-history">
+  <section class="band dark tight">
+    <div class="wrap">
+      <span class="eyebrow on-dark">History</span>
+      <h1 class="display" style="color:#fff;max-width:16ch">Fifteen years of proof</h1>
+      <p class="lead" style="color:#BFD0EC;max-width:54ch;margin-top:1rem">From a single Brooklyn classroom to a model spanning 11 states and 28 countries — the story of P-TECH.</p>
+    </div>
+  </section>
+
+  <section class="band white">
+    <div class="wrap split">
+      <div class="reveal">
+        <span class="eyebrow">The Origin</span>
+        <h2>A radical idea, made practical</h2>
+        <p style="color:var(--muted);margin-bottom:1rem">In 2010, New York City leaders and IBM asked a simple question: what if high school didn't end at 12th grade — and didn't end without a job in sight? The answer was a school combining grades 9–14, a no-cost associate degree, and an industry partner invested in every student.</p>
+        <p style="color:var(--muted);margin-bottom:1rem">P-TECH opened in Brooklyn in September 2011, enrolling its first class through open admission — no tests, no screens. Two years later, President Obama told the nation about it in his State of the Union address, urging that every American student deserves the same opportunity.</p>
+        <p style="color:var(--muted)">The model's power has always been its bipartisan appeal: championed by Democratic and Republican leaders alike — from President Obama to Governor Larry Hogan in Maryland and Governor Greg Abbott in Texas — and studied by heads of state from Australia to Ireland.</p>
+        <a class="deep-link" href="#/origin">Deep Background on the Origin of P-TECH</a>
+      </div>
+      <figure class="ratio-43 reveal"><img src="images/obama-ptech-brooklyn.jpg" alt="President Obama visiting P-TECH in Brooklyn, 2013" loading="lazy"><figcaption>President Obama and Education Secretary Arne Duncan visit students at P-TECH in Brooklyn.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="band tint">
+    <div class="wrap">
+      <div class="section-head reveal"><span class="eyebrow">Timeline</span><h2>How the movement grew</h2></div>
+      <div class="timeline reveal" style="max-width:760px">
+        <div class="t-item"><b>2010</b>IBM and New York City leaders design a new kind of school: grades 9–14, one pathway from diploma to degree to career.</div>
+        <div class="t-item"><b>2011</b>P-TECH opens in Brooklyn with its first class of students — open enrollment, no screening, college credit from the start.</div>
+        <div class="t-item"><b>2012</b>Chicago launches five early college STEM schools on the P-TECH design, proving the model travels.</div>
+        <div class="t-item"><b>2013</b>President Obama features P-TECH in the State of the Union and visits the Brooklyn school. New York State launches a statewide P-TECH initiative.</div>
+        <div class="t-item"><b>2014–2017</b>Colorado, Maryland, and Texas adopt the model with bipartisan support from Governors Hickenlooper, Hogan, and Abbott. The first graduates finish years ahead of schedule, degrees in hand.</div>
+        <div class="t-item"><b>2018</b>P-TECH goes global — reaching Ireland, Australia, and partners across five continents. World leaders take note.</div>
+        <div class="t-item"><b>2019–2025</b>The network grows to 600+ schools in 28 countries. Independent research confirms P-TECH students complete college degrees at far higher rates than their peers.</div>
+        <div class="t-item"><b>2026</b>The P-TECH Alliance launches as the intermediary organization to design new schools, support existing programs, and scale the model across the nation.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band white tight">
+    <div class="wrap">
+      <div class="pullquote reveal">
+        <blockquote>We need to give every American student opportunities like this.</blockquote>
+        <cite>President Barack Obama — State of the Union, 2013</cite>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ARCHIVED FOR PHASE 2 — Stories page. Not in nav, not routable.
+     To restore: uncomment, re-add '/stories': 'stories' to routes, and restore nav/footer links.
+<!—— ============================================== STORIES ——>
+<div class="page" id="page-stories">
+  <section class="band dark tight">
+    <div class="wrap">
+      <span class="eyebrow on-dark">Stories</span>
+      <h1 class="display" style="color:#fff">This is P-TECH</h1>
+      <p class="lead" style="color:#BFD0EC;max-width:54ch;margin-top:1rem">The proof isn't only in the data — it's in the graduates. Students from every corner of the network, six years ahead of the curve.</p>
+    </div>
+  </section>
+
+  <section class="band white">
+    <div class="wrap">
+      <div class="section-head center reveal" style="margin-bottom:36px">
+        <span class="eyebrow">Coming Soon</span>
+        <h2>Stories from the network</h2>
+        <p class="lead">We're gathering profiles of P-TECH students and graduates from across the network — in their own words. Check back soon, or help us find the next one.</p>
+      </div>
+      <div class="reveal" style="max-width:640px;margin:0 auto;text-align:center;background:var(——sky);border-radius:var(——radius);padding:44px 36px">
+        <h3 style="margin-bottom:.6rem">Know a story we should tell?</h3>
+        <p style="color:var(——muted);margin-bottom:1.6rem">If you're a P-TECH graduate, student, educator, or industry partner with a story worth sharing, we'd like to hear from you.</p>
+        <a class="btn" href="mailto:contact@ptech.org?subject=Story%20recommendation">Recommend a student or graduate</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+-->
+
+<!-- ============================================== ORIGIN (DEEP BACKGROUND) -->
+<div class="page" id="page-origin">
+  <section class="band dark tight">
+    <div class="wrap">
+      <span class="eyebrow on-dark">Deep Background</span>
+      <h1 class="display" style="color:#fff;max-width:18ch">The Origin of P-TECH</h1>
+      <p class="lead" style="color:#BFD0EC;max-width:56ch;margin-top:1rem">How a conversation between a mayor and a CEO became a school model spanning 11 states and 28 countries.</p>
+    </div>
+  </section>
+
+  <section class="band white">
+    <div class="wrap prose">
+      <p>The P-TECH model grew out of conversations in 2010 among Mayor Michael Bloomberg and IBM CEO Sam Palmisano. As the city recovered from the Great Recession, they discussed the need to connect public school students to careers in technology and engineering. Palmisano asked Stanley Litow, head of IBM&#8217;s corporate foundation, to develop a solution.</p>
+
+      <p>Litow believed traditional school-business partnerships were insufficient because a high school diploma alone no longer led to sustainable careers. Instead, he proposed a new model that would integrate high school, community college, and industry into a seamless six-year pathway.</p>
+
+      <p>Students would earn both a high school diploma and an associate degree while receiving mentoring, paid internships, and workplace experiences aligned with employer needs. The goal was to prepare graduates for long-term careers rather than a single entry-level job.</p>
+
+      <p>Working with City University of New York (CUNY) Chancellor Matt Goldstein, Litow also sought to address poor college readiness, high remediation rates, and low community college graduation rates. IBM agreed to modify its hiring practices so graduates with associate degrees would have access to career opportunities. From the outset, Litow envisioned a model that could expand beyond a single school, creating a scalable partnership among education, higher education, and industry.</p>
+
+      <h3>From concept to classroom in two weeks</h3>
+
+      <p>The P-TECH model moved from concept to reality in two months, when Bloomberg announced on television a partnership among New York City, IBM, and the City University of New York to create the nation&#8217;s first grades 9&#8211;14 school. With just months to prepare, leaders agreed on a shared governance structure, a curriculum aligned with workforce needs, and a commitment to keeping the program affordable, scalable, and compatible with existing public education systems and funding.</p>
+
+      <p>The first P-TECH school opened in the former Paul Robeson High School in Brooklyn&#8217;s Crown Heights, a decision that sparked community concerns because of the neighborhood&#8217;s high crime rate and previous school closures. Planners engaged local leaders, educators, parents, and community organizations, emphasizing that P-TECH would have open admissions, serve neighborhood students, provide mentoring, paid internships, and a free associate degree from the New York City College of Technology, and prepare graduates for both four-year colleges and careers. Rashid F. Davis was selected as the founding principal.</p>
+
+      <p>By addressing concerns about equity, access, and cost while building broad stakeholder support, the founders established a model designed to expand well beyond a single school.</p>
+
+      <h3>The first 103 students</h3>
+
+      <p>None of the first 103 students had been accepted by their 12 first-choice high schools in the citywide matching process; many were also rejected by their second dozen choices. This group of 14-year-olds, all students of color, 80% of whom came from families in poverty, had not been dreaming of STEM careers for years. Half of the students started 9th grade with math and literacy scores below grade level. As they climbed the stairs of the 106-year-old Beaux Arts building across from a public housing project, they might not have been expected to thrive, let alone have their life stories connected to addressing some of the thorniest problems of American education. Soon, they excelled.</p>
+
+      <h3>Beyond New York</h3>
+
+      <p>Bloomberg shared his enthusiasm about P-TECH with Rahm Emanuel, the mayor of Chicago at the time. The Sarah E. Goode STEM Academy opened in 2012, enrolling 463 students by its second year, and became the starting point for the national expansion of P-TECH beyond New York.</p>
+
+      <p>In his 2013 State of the Union address, then President Obama said of P-TECH, &#8220;We need to give every American student opportunities like this.&#8221; He later visited the school, as did the prime minister of Australia, several U.S. Secretaries of Education, and New York Gov. Kathy Hochul. In 2016, Harvard Business School professor Rosabeth Moss Kanter completed a <a href="https://www.hbs.edu/faculty/Pages/item.aspx?num=45619" target="_blank" rel="noopener">three-part case study</a> of the model. By 2018, the State University of New York embedded the program in all 30 of its community colleges.</p>
+
+      <h3>Today</h3>
+
+      <p>In 2026, the inaugural Brooklyn P-TECH in Crown Heights was ranked as the highest performing open admission high school among over 500 public high schools across New York State. Today, the model has spread across 11 U.S. states and 28 countries with over 600 schools. Its success is measured by high school graduation rates, work-based learning activities, college credit accumulation, degree completion, and job placement.</p>
+
+      <p style="color:var(--navy);font-weight:600;font-size:1.15rem">Every student on the planet should have an educational opportunity like P-TECH.</p>
+
+      <p style="margin-top:2.4rem"><a class="go" href="#/history">Back to History</a></p>
+    </div>
+  </section>
+</div>
+
+<!-- ============================================== RESEARCH & DATA -->
+<div class="page" id="page-research">
+  <section class="band dark tight">
+    <div class="wrap">
+      <span class="eyebrow on-dark">Research &amp; Data</span>
+      <h1 class="display" style="color:#fff;max-width:16ch">The evidence behind the model</h1>
+      <p class="lead" style="color:#BFD0EC;max-width:56ch;margin-top:1rem">P-TECH is one of the most rigorously studied school designs in the country. Here is what independent researchers have found.</p>
+    </div>
+  </section>
+
+  <section class="band dark tight" style="background:var(--navy-2)">
+    <div class="wrap">
+      <span class="eyebrow on-dark reveal">Independent Research · MDRC &amp; Colorado Dept. of Education</span>
+      <div class="counters" style="margin-top:2rem">
+        <div class="counter reveal"><b data-count="38">0</b><span>Percentage points higher internship completion than comparison students</span></div>
+        <div class="counter reveal"><b data-count="46" data-suffix="%">0</b><span>Enrolled in college coursework within four years — vs. 20% of comparison students</span></div>
+        <div class="counter reveal"><b data-count="5">0</b><span>Percentage points higher associate degree completion, seven years after 9th grade</span></div>
+        <div class="counter reveal"><b data-count="57" data-suffix="%">0</b><span>Of Colorado P-TECH graduates continue to four-year universities</span></div>
+      </div>
+      <p class="reveal" style="color:#9FB3D8;font-size:.88rem;max-width:70ch;margin-top:2.5rem">Findings from MDRC's independent evaluation of seven New York City P-TECH 9–14 schools and from the Colorado Department of Education's statewide report using National Student Clearinghouse data. MDRC notes variation in implementation across schools — a reason the Alliance's quality and coaching work matters.</p>
+    </div>
+  </section>
+
+  <section class="band white">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">The Reports</span>
+        <h2>Read the research</h2>
+      </div>
+      <div class="grid-3">
+        <div class="card reveal"><div class="body"><span class="eyebrow" style="margin-bottom:.4rem">MDRC</span><h3>P-TECH 9–14: Pathways to Success</h3><p>The independent evaluation of seven New York City P-TECH schools — internships, college coursework, and degree completion.</p><a class="go" href="https://www.mdrc.org/work/publications/p-tech-9-14-pathways-success" target="_blank" rel="noopener">Read the evaluation</a></div></div>
+        <div class="card reveal"><div class="body"><span class="eyebrow" style="margin-bottom:.4rem">Colorado Dept. of Education</span><h3>TREP &amp; P-TECH statewide report</h3><p>Colorado's statewide outcomes for P-TECH graduates, including continuation to four-year universities.</p><a class="go" href="https://www.cde.state.co.us/postsecondary/trep-ptech-report-2025" target="_blank" rel="noopener">Read the report</a></div></div>
+        <div class="card reveal"><div class="body"><span class="eyebrow" style="margin-bottom:.4rem">Coming Soon</span><h3>The Alliance national brief</h3><p>The Alliance is building a national directory and shared metrics — with an annual national research brief to follow.</p><a class="go" href="https://eepurl.com/yU9dCv5f8z" target="_blank" rel="noopener">Get notified</a></div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================================== GET INVOLVED -->
+<div class="page" id="page-involved">
+  <section class="band dark tight">
+    <div class="wrap">
+      <span class="eyebrow on-dark">Get Involved</span>
+      <h1 class="display" style="color:#fff">Find your path</h1>
+      <p class="lead" style="color:#BFD0EC;max-width:54ch;margin-top:1rem">Whether you lead a state, a company, a foundation, or a classroom — there is a role for you in the P-TECH network.</p>
+    </div>
+  </section>
+
+  <section class="band white">
+    <div class="wrap">
+      <div class="grid-4">
+        <div class="card audience reveal" role="button" tabindex="0" data-modal="states">
+          <div class="tile tile-a" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M7 12.5 18 9l12 3.5L41 9v27l-11 3.5L18 36 7 39.5Z"/><path d="M18 9v27M30 12.5v27"/><path d="M7 22h11M30 25h11" stroke-dasharray="2.5 2.5"/><path d="m24 19.2 1.75 3.55 3.92.57-2.84 2.76.67 3.9L24 28.15l-3.5 1.84.67-3.9-2.84-2.76 3.92-.57Z"/></svg></div>
+          <div class="body"><h3>States &amp; Districts</h3><p>Launch or expand P-TECH pathways with hands-on Alliance support.</p><span class="go">Learn more</span></div>
+        </div>
+        <div class="card audience reveal" role="button" tabindex="0" data-modal="employers">
+          <div class="tile tile-b" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="6" y="16" width="36" height="24" rx="3"/><path d="M18 16v-4a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v4"/><path d="M6 26h36"/><path d="M22 26v4h4v-4"/></svg></div>
+          <div class="body"><h3>Employers</h3><p>Offer mentors, worksite visits, and paid internships &#8212; and build your future workforce.</p><span class="go">Learn more</span></div>
+        </div>
+        <div class="card audience reveal" role="button" tabindex="0" data-modal="funders">
+          <div class="tile tile-c" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 6v34h34"/><path d="M13 34c6.5 0 8.8-4.6 12-11.5C28.2 15.6 31.5 11 39 11"/><path d="M34.2 8.4 39 11l-2.6 4.8"/><circle cx="13" cy="34" r="2.4"/><circle cx="25" cy="22.5" r="2.4"/><path d="M17 40v-4M25 40v-9M33 40v-14" stroke-dasharray="2 3" opacity=".55"/></svg></div>
+          <div class="body"><h3>Funders</h3><p>Invest in national infrastructure with a fifteen-year evidence base.</p><span class="go">Learn more</span></div>
+        </div>
+        <div class="card audience reveal" role="button" tabindex="0" data-modal="educators">
+          <div class="tile tile-d" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 10 4 19l20 9 20-9-20-9Z"/><path d="M12 24v10c0 3 5.4 6 12 6s12-3 12-6V24"/><path d="M42 19v11"/></svg></div>
+          <div class="body"><h3>Educators &amp; Alumni</h3><p>Join the community of practice &#8212; or assist the students following in your footsteps.</p><span class="go">Learn more</span></div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band tight">
+    <div class="wrap">
+      <div class="news-band reveal">
+        <div>
+          <span class="eyebrow on-dark">Stay Connected</span>
+          <h2>Sign up for our newsletter</h2>
+          <p style="color:#BFD0EC">Be first to hear news from the Alliance and stories from across the network.</p>
+        </div>
+        <form class="mc-form" data-source="get-involved" novalidate>
+          <input type="email" name="EMAIL" required placeholder="Email address" aria-label="Email address">
+          <button class="btn gold" type="submit">Sign up</button>
+          <div style="position:absolute;left:-5000px" aria-hidden="true"><input type="text" name="b_4e294fd788f48778ee6267dd9_f5afcaa44f" tabindex="-1" value=""></div>
+          <p class="mc-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+</main>
+
+<!-- ============================================== AUDIENCE MODALS -->
+<div class="modal-backdrop" id="audienceModal" role="dialog" aria-modal="true" aria-labelledby="amTitle">
+  <div class="modal" role="document">
+    <button class="modal-close" id="amClose" aria-label="Close">&times;</button>
+    <div class="modal-head">
+      <span class="eyebrow" id="amEyebrow">Get Involved</span>
+      <h2 id="amTitle"></h2>
+      <p id="amSub"></p>
+    </div>
+    <div class="modal-body">
+      <p id="amBody"></p>
+      <div class="modal-actions">
+        <a class="btn" id="amSignup" href="#" target="_blank" rel="noopener">Sign up for updates</a>
+        <button class="alt" id="amEmail" type="button" aria-expanded="false" aria-controls="amMailPanel">Or email us directly</button>
+      </div>
+      <div class="mailpanel" id="amMailPanel" hidden>
+        <div class="mailrow">
+          <code id="amAddr">contact@ptech.org</code>
+          <button class="copybtn" id="amCopy" type="button">Copy</button>
+        </div>
+        <div class="maillinks">
+          <a id="amGmail"  href="#" target="_blank" rel="noopener">Gmail</a>
+          <a id="amOutlook" href="#" target="_blank" rel="noopener">Outlook on the web</a>
+          <a id="amDefault" href="#">Default mail app</a>
+        </div>
+      </div>
+      <p class="modal-note">We&#8217;ll only use your details to follow up about P-TECH. You can unsubscribe at any time.</p>
+    </div>
+  </div>
+</div>
+
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="#/" aria-label="P-TECH Alliance home"><img src="data:image/png;base64,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" alt="P-TECH"></a>
+        <p style="max-width:34ch;margin-top:1rem">A seamless pathway from high school to a competitive, no-cost degree to a career.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <a href="#/about">About Us</a>
+        <a href="#/history">History</a>
+        <a href="#/research">Research &amp; Data</a>
+        <a href="#/get-involved">Get Involved</a>
+      </div>
+      <div>
+        <h4>About</h4>
+        <a href="#/about/mission">Mission</a>
+        <a href="#/about/news">P-TECH in the News</a>
+        <a href="#/about/board">Board</a>
+        <a href="#/about/staff">Staff</a>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <a href="mailto:contact@ptech.org">contact@ptech.org</a>
+      </div>
+    </div>
+    <div class="foot-meta">
+      <span>© 2026 P-TECH Alliance</span>
+      <span>P-TECH™ and ptech.org — entrusted to the Alliance by IBM</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ================= Router ================= */
+const routes = { '': 'home', '/': 'home', '/about': 'about', '/history': 'history', '/origin': 'origin', '/research': 'research', '/get-involved': 'involved' };
+/* Deep links to a specific About tab, e.g. #/about/board */
+function openTab(name){
+  const btn = document.querySelector('.tabs button[data-tab="' + name + '"]');
+  if (btn) btn.click();
+}
+function route(){
+  let hash = location.hash.replace(/^#/, '') || '/';
+  let tab = null;
+  const m = hash.match(/^\/about\/(mission|news|board|staff)$/);
+  if (m) { tab = m[1]; hash = '/about'; }
+  const id = routes[hash] || 'home';
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + id));
+  document.querySelectorAll('nav.menu a').forEach(a => {
+    const target = a.getAttribute('href').replace(/^#/, '');
+    a.classList.toggle('active', target === hash);
+  });
+  document.querySelectorAll('footer a[href^="#/about/"]').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + location.hash.replace(/^#/, ''));
+  });
+  document.getElementById('menu').classList.remove('open');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  if (tab) openTab(tab); else if (id === 'about') openTab('mission');
+  observeReveals();
+}
+window.addEventListener('hashchange', route);
+document.getElementById('hamb').addEventListener('click', () => document.getElementById('menu').classList.toggle('open'));
+
+/* ================= About tabs ================= */
+document.querySelectorAll('.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.tabpane').forEach(p => p.classList.toggle('active', p.id === 'tab-' + btn.dataset.tab));
+  });
+});
+
+/* ================= Headshot fallback (initials avatar) ================= */
+document.querySelectorAll('.person .headshot').forEach(img => {
+  img.addEventListener('error', () => {
+    const name = (img.getAttribute('alt') || '').trim();
+    const initials = name.split(/\s+/).map(w => w[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
+    const div = document.createElement('div');
+    div.className = 'headshot initials';
+    div.textContent = initials;
+    div.setAttribute('aria-label', name);
+    img.replaceWith(div);
+  });
+});
+
+/* ================= Expandable people cards ================= */
+document.querySelectorAll('.person[role="button"]').forEach(card => {
+  const toggle = () => {
+    const open = card.classList.toggle('open');
+    card.setAttribute('aria-expanded', open);
+    const t = card.querySelector('.toggle');
+    if (t) t.textContent = open ? 'Close bio' : 'Read full bio';
+  };
+  card.addEventListener('click', toggle);
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+  });
+});
+
+/* ================= Reveal + counters ================= */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    e.target.querySelectorAll('b[data-count]').forEach(runCounter);
+    if (e.target.matches('.counter, .hero-badges div')) {
+      const b = e.target.querySelector('b[data-count]'); if (b) runCounter(b);
+    }
+    io.unobserve(e.target);
+  });
+}, { threshold: 0.25 });
+
+function observeReveals(){
+  document.querySelectorAll('.page.active .reveal, .page.active .counter, .page.active .hero-badges div').forEach(el => io.observe(el));
+}
+function runCounter(b){
+  if (b.dataset.done) return; b.dataset.done = '1';
+  const end = +b.dataset.count, pre = b.dataset.prefix || '', suf = b.dataset.suffix || '';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || end === 0){ b.textContent = pre + end + suf; return; }
+  const dur = 1400, t0 = performance.now();
+  (function tick(t){
+    const k = Math.min(1, (t - t0) / dur), eased = 1 - Math.pow(1 - k, 3);
+    b.textContent = pre + Math.round(end * eased) + suf;
+    if (k < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+
+/* ================= US map — validated states only ================= */
+/* The 11 confirmed P-TECH states (validated August 2026). Keep this list and the
+   "11 U.S. states" figures in the page copy in sync when the count changes. */
+const ptechStates = ['California','Colorado','Connecticut','Illinois','Louisiana','Maryland','Minnesota','New Jersey','New York','Rhode Island','Texas'];
+function drawUS(){
+  const host = document.getElementById('usMap');
+  if (!host || typeof d3 === 'undefined' || typeof topojson === 'undefined') return;
+  d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us => {
+    const feats = topojson.feature(us, us.objects.states).features;
+    const proj = d3.geoAlbersUsa().fitSize([520, 330], topojson.feature(us, us.objects.states));
+    const path = d3.geoPath(proj);
+    const svg = d3.select(host).append('svg').attr('viewBox','0 0 520 330');
+    svg.selectAll('path').data(feats).join('path')
+      .attr('d', path)
+      .attr('class', d => 'state' + (ptechStates.includes(d.properties.name) ? ' engaged' : ''))
+      .append('title').text(d => d.properties.name);
+  }).catch(() => { host.innerHTML = '<p style="color:var(--muted)">Map loading…</p>'; });
+}
+
+/* ================= Mailchimp newsletter signup ================= */
+/* Audience: P-TECH Alliance (us3) — u=4e294fd788f48778ee6267dd9, id=f5afcaa44f
+   Mailchimp blocks plain fetch() cross-origin, so we use its JSONP endpoint (post-json + c=callback). */
+const MC_ENDPOINT = 'https://ptech.us3.list-manage.com/subscribe/post-json?u=4e294fd788f48778ee6267dd9&id=f5afcaa44f';
+const MC_HONEYPOT = 'b_4e294fd788f48778ee6267dd9_f5afcaa44f';
+const MC_HOSTED = 'https://eepurl.com/yU9dCv5f8z';
+
+function mcSubmit(form){
+  const emailEl = form.querySelector('input[name="EMAIL"]');
+  const msg = form.querySelector('.mc-msg');
+  const email = (emailEl.value || '').trim();
+  msg.className = 'mc-msg';
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    msg.textContent = 'Please enter a valid email address.';
+    msg.classList.add('err');
+    emailEl.focus();
+    return;
+  }
+
+  form.classList.add('sending');
+  msg.textContent = 'Signing you up…';
+
+  const cb = 'mcCallback_' + Date.now();
+  const params = new URLSearchParams({
+    EMAIL: email,
+    SOURCE: form.dataset.source || 'website',
+    [MC_HONEYPOT]: form.querySelector('input[name="' + MC_HONEYPOT + '"]').value || '',
+    c: cb
+  });
+
+  const script = document.createElement('script');
+  let settled = false;
+
+  function finish(ok, text){
+    if (settled) return; settled = true;
+    clearTimeout(timer);
+    delete window[cb];
+    script.remove();
+    form.classList.remove('sending');
+    msg.textContent = text;
+    msg.classList.add(ok ? 'ok' : 'err');
+    if (ok) { emailEl.value = ''; emailEl.disabled = true; form.querySelector('button').disabled = true; }
+  }
+
+  window[cb] = function(data){
+    if (data && data.result === 'success') {
+      finish(true, 'Thanks — check your inbox to confirm your subscription.');
+    } else {
+      /* Mailchimp returns HTML in msg; strip tags and handle the already-subscribed case gracefully. */
+      const raw = (data && data.msg ? String(data.msg) : '').replace(/<[^>]*>/g, '');
+      if (/already subscribed/i.test(raw)) finish(true, "You're already on our list — thanks!");
+      else finish(false, raw || 'Something went wrong. Please email contact@ptech.org.');
+    }
+  };
+
+  /* Fallback: preview iframes, ad blockers, and strict CSP can block the cross-origin
+     script. Offer the hosted Mailchimp form so signup always has a working path. */
+  const fallback = () => {
+    if (settled) return; settled = true;
+    clearTimeout(timer); delete window[cb]; script.remove();
+    form.classList.remove('sending');
+    msg.className = 'mc-msg err';
+    msg.innerHTML = 'Signup didn\'t load here. <a href="' + MC_HOSTED + '" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">Open the signup form</a> or email contact@ptech.org.';
+  };
+  const timer = setTimeout(fallback, 8000);
+  script.onerror = fallback;
+
+  script.src = MC_ENDPOINT + '&' + params.toString();
+  document.body.appendChild(script);
+}
+
+document.querySelectorAll('.mc-form').forEach(form => {
+  form.addEventListener('submit', e => { e.preventDefault(); mcSubmit(form); });
+});
+
+/* ================= Hero photo carousel ================= */
+(function(){
+  const media = document.getElementById('heroMedia');
+  if (!media) return;
+  const slides = [...media.querySelectorAll('.slide')];
+  const dots = [...media.querySelectorAll('.hero-dots button')];
+  let i = 0, timer = null;
+  const DUR = 5500;
+
+  function show(n){
+    i = (n + slides.length) % slides.length;
+    slides.forEach((s,k) => s.classList.toggle('on', k === i));
+    dots.forEach((d,k) => d.setAttribute('aria-selected', k === i));
+  }
+  function play(){ stop(); timer = setInterval(() => show(i+1), DUR); }
+  function stop(){ if (timer) clearInterval(timer); timer = null; }
+
+  dots.forEach((d,k) => d.addEventListener('click', () => { show(k); play(); }));
+  media.addEventListener('mouseenter', stop);
+  media.addEventListener('mouseleave', play);
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : play());
+
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) play();
+})();
+
+/* ================= Audience modals (Get Involved) ================= */
+/* Mailchimp hosted form. The AUDIENCE merge field is pre-filled from the URL so each
+   window's signups land segmented. Create a merge field with tag AUDIENCE in
+   Mailchimp (Audience > Settings > Audience fields and *|MERGE|* tags). */
+const MC_FORM = 'https://ptech.us3.list-manage.com/subscribe?u=4e294fd788f48778ee6267dd9&id=f5afcaa44f';
+/* The MERGE TAG of the audience field in Mailchimp — not its label.
+   Check Audience > Settings > Audience fields and *|MERGE|* tags (right-hand column).
+   If it reads MMERGE6 (or similar), change this one string to match. The field must
+   also be set to VISIBLE on signup forms for the pre-fill to reach it. */
+const MC_AUDIENCE_TAG = 'AUDIENCE';
+const CONTACT_EMAIL = 'contact@ptech.org';
+
+const AUDIENCES = {
+  states: {
+    title: 'States &amp; Districts',
+    sub: 'Launch or expand P-TECH pathways with hands-on Alliance support.',
+    body: 'If your state or school district is interested in learning more about P-TECH or creating programs using the model, we connect you with a guided pathway and best practices to direct your efforts. This includes policy frameworks, partner agreements, course curriculum, and scope and sequence materials that enable students to graduate with a full, no-cost associate degree. When you reach roadblocks, we offer assistance drawn from how other P-TECH schools have overcome similar obstacles.',
+    cta: 'Tell us about your district',
+    tag: 'States and Districts',
+    subject: 'State or district partnership'
+  },
+  employers: {
+    title: 'Employers',
+    sub: 'Offer mentors, worksite visits, and paid internships &mdash; and build your future workforce.',
+    body: 'If your organization is interested in working with a P-TECH school, we can help you create mentorships, build work-based learning projects, formalize partnerships through memoranda of understanding, and develop paid internships for qualified students. Aligning your company&rsquo;s talent development strategy with a supported pathway connecting high school, college, and career gives you access to a qualified pool of entry-level applicants with a wide variety of technical skills and industry credentials.',
+    cta: 'Start a partnership conversation',
+    tag: 'Employers',
+    subject: 'Employer partnership'
+  },
+  funders: {
+    title: 'Funders',
+    sub: 'Invest in national infrastructure with a fifteen-year evidence base.',
+    body: 'We are actively seeking philanthropic support and partnerships, and stand ready to learn more about helping meet your goals of educational excellence, workforce development, addressing affordability and equity, and spreading opportunity broadly across multiple regions. Independent research from MDRC documents what the model delivers, and near-term priorities include a national school directory, a shared outcomes dashboard, and a national convening of P-TECH school leaders.',
+    cta: 'Discuss an investment',
+    tag: 'Funders',
+    subject: 'Funding the Alliance'
+  },
+  educators: {
+    title: 'Educators &amp; P-TECH Alumni',
+    sub: 'Join the community of practice &mdash; or assist the students following in your footsteps.',
+    body: 'Through national and regional convenings, resource libraries, and digital networks, we connect P-TECH staff in every role with counterparts who share their aspirations. We also invite P-TECH alumni to keep growing the movement by joining our alumni network.',
+    cta: 'Join the network',
+    tag: 'Educators and Alumni',
+    subject: 'Educators and alumni'
+  }
+};
+
+(function(){
+  const backdrop = document.getElementById('audienceModal');
+  if (!backdrop) return;
+  const elTitle = document.getElementById('amTitle');
+  const elSub   = document.getElementById('amSub');
+  const elBody  = document.getElementById('amBody');
+  const elSign  = document.getElementById('amSignup');
+  const elMail  = document.getElementById('amEmail');
+  const elPanel = document.getElementById('amMailPanel');
+  const elCopy  = document.getElementById('amCopy');
+  const elGmail = document.getElementById('amGmail');
+  const elOut   = document.getElementById('amOutlook');
+  const elDef   = document.getElementById('amDefault');
+  const elClose = document.getElementById('amClose');
+  let lastFocus = null;
+
+  function open(key){
+    const a = AUDIENCES[key]; if (!a) return;
+    lastFocus = document.activeElement;
+    elTitle.innerHTML = a.title;
+    elSub.innerHTML   = a.sub;
+    elBody.innerHTML  = a.body;
+    elSign.textContent = a.cta;
+    elSign.href = MC_FORM + '&' + MC_AUDIENCE_TAG + '=' + encodeURIComponent(a.tag);
+    /* Email options — no forced mailto handler; the person chooses. */
+    const subj = encodeURIComponent('P-TECH Alliance \u2014 ' + a.subject);
+    elGmail.href = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(CONTACT_EMAIL) + '&su=' + subj;
+    elOut.href   = 'https://outlook.office.com/mail/deeplink/compose?to=' + encodeURIComponent(CONTACT_EMAIL) + '&subject=' + subj;
+    elDef.href   = 'mailto:' + CONTACT_EMAIL + '?subject=' + subj;
+    elPanel.hidden = true;
+    elMail.setAttribute('aria-expanded', 'false');
+    elCopy.textContent = 'Copy';
+    elCopy.classList.remove('done');
+    backdrop.classList.add('open');
+    document.body.classList.add('modal-open');
+    requestAnimationFrame(() => backdrop.classList.add('shown'));
+    elClose.focus();
+  }
+  function close(){
+    backdrop.classList.remove('shown');
+    document.body.classList.remove('modal-open');
+    setTimeout(() => backdrop.classList.remove('open'), 220);
+    if (lastFocus) lastFocus.focus();
+  }
+
+  document.querySelectorAll('.card.audience').forEach(card => {
+    const key = card.dataset.modal;
+    card.addEventListener('click', () => open(key));
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(key); }
+    });
+  });
+  elMail.addEventListener('click', () => {
+    const open = elPanel.hidden;
+    elPanel.hidden = !open;
+    elMail.setAttribute('aria-expanded', String(open));
+  });
+  elCopy.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(CONTACT_EMAIL); }
+    catch { /* clipboard blocked — the address is selectable as a fallback */ }
+    elCopy.textContent = 'Copied';
+    elCopy.classList.add('done');
+    setTimeout(() => { elCopy.textContent = 'Copy'; elCopy.classList.remove('done'); }, 2000);
+  });
+  elClose.addEventListener('click', close);
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) close(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && backdrop.classList.contains('open')) close();
+    /* keep focus inside the dialog while it is open */
+    if (e.key === 'Tab' && backdrop.classList.contains('open')) {
+      const f = [...backdrop.querySelectorAll('button, a[href]')].filter(el => el.offsetParent !== null);
+      const first = f[0], last = f[f.length-1];
+      if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    }
+  });
+})();
+
+/* ================= Boot ================= */
+route();
+drawUS();
+</script>
+</body>
+</html>
