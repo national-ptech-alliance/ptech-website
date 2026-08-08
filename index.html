@@ -276,6 +276,14 @@ footer a:hover{color:#fff}
   padding:7px 14px;border-radius:999px;color:var(--royal);transition:border-color .15s}
 .maillinks a:hover{border-color:var(--royal)}
 @media(max-width:640px){.mailrow code{min-width:0;font-size:.9rem}}
+
+.mc-form.quick{display:flex;gap:10px;flex-wrap:wrap;position:relative}
+.mc-form.quick input[type=email]{flex:1;min-width:200px;padding:13px 16px;border-radius:999px;
+  border:1.5px solid var(--line);font-family:inherit;font-size:1rem;color:var(--ink);background:#fff}
+.mc-form.quick input[type=email]:focus{border-color:var(--royal);outline:none}
+.mc-form.quick .mc-msg{flex-basis:100%;margin-top:4px;font-size:.92rem;color:var(--muted)}
+.mc-form.quick .mc-msg.ok{color:var(--royal);font-weight:600}
+.mc-form.quick .mc-msg.err{color:#C0392B}
 /* ---------- audience modal ---------- */
 .card.audience{cursor:pointer}
 .card.audience:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
@@ -372,7 +380,7 @@ figcaption .credit{display:block;font-family:'IBM Plex Mono',monospace;font-size
         <p class="aff">The Pathways in Technology Early College High School model (P-TECH) makes college affordable by design: students graduate with a high school diploma, an associate degree at no cost to their families, and real workplace experience &#8212; all in one seamless pathway.</p>
         <div class="cta-row">
           <a class="btn" href="#/about">Explore the model</a>
-          <a class="btn ghost" href="#/get-involved">Join our mailing list</a>
+          <button class="btn ghost" type="button" id="heroJoin">Join our mailing list</button>
         </div>
         <div class="hero-badges">
           <div><b data-count="11">0</b><span>U.S. States</span></div>
@@ -463,7 +471,11 @@ figcaption .credit{display:block;font-family:'IBM Plex Mono',monospace;font-size
           <h2>Sign up for our newsletter</h2>
           <p style="color:#BFD0EC">News from the network, research briefs, and stories from students six years ahead of the curve.</p>
         </div>
-        <form class="mc-form" data-source="homepage" novalidate>
+        <form class="mc-form" data-source="homepage"
+              action="https://ptech.us3.list-manage.com/subscribe/post"
+              method="post" target="mcFrame" novalidate>
+          <input type="hidden" name="u" value="4e294fd788f48778ee6267dd9">
+          <input type="hidden" name="id" value="f5afcaa44f">
           <input type="email" name="EMAIL" required placeholder="Email address" aria-label="Email address">
           <button class="btn gold" type="submit">Sign up</button>
           <div style="position:absolute;left:-5000px" aria-hidden="true"><input type="text" name="b_4e294fd788f48778ee6267dd9_f5afcaa44f" tabindex="-1" value=""></div>
@@ -712,7 +724,7 @@ figcaption .credit{display:block;font-family:'IBM Plex Mono',monospace;font-size
 
       <p>Working with City University of New York (CUNY) Chancellor Matt Goldstein, Litow also sought to address poor college readiness, high remediation rates, and low community college graduation rates. IBM agreed to modify its hiring practices so graduates with associate degrees would have access to career opportunities. From the outset, Litow envisioned a model that could expand beyond a single school, creating a scalable partnership among education, higher education, and industry.</p>
 
-      <h3>From concept to classroom in two weeks</h3>
+      <h3>From concept to classroom in two months</h3>
 
       <p>The P-TECH model moved from concept to reality in two months, when Bloomberg announced on television a partnership among New York City, IBM, and the City University of New York to create the nation&#8217;s first grades 9&#8211;14 school. With just months to prepare, leaders agreed on a shared governance structure, a curriculum aligned with workforce needs, and a commitment to keeping the program affordable, scalable, and compatible with existing public education systems and funding.</p>
 
@@ -728,7 +740,7 @@ figcaption .credit{display:block;font-family:'IBM Plex Mono',monospace;font-size
 
       <p>Bloomberg shared his enthusiasm about P-TECH with Rahm Emanuel, the mayor of Chicago at the time. The Sarah E. Goode STEM Academy opened in 2012, enrolling 463 students by its second year, and became the starting point for the national expansion of P-TECH beyond New York.</p>
 
-      <p>In his 2013 State of the Union address, then President Obama said of P-TECH, &#8220;We need to give every American student opportunities like this.&#8221; He later visited the school, as did the prime minister of Australia, several U.S. Secretaries of Education, and New York Gov. Kathy Hochul. In 2016, Harvard Business School professor Rosabeth Moss Kanter completed a <a href="https://www.hbs.edu/faculty/Pages/item.aspx?num=45619" target="_blank" rel="noopener">three-part case study</a> of the model. By 2018, the State University of New York embedded the program in all 30 of its community colleges.</p>
+      <p>In his 2013 State of the Union address, then President Obama said of P-TECH, &#8220;We need to give every American student opportunities like this.&#8221; He later visited the school, as did the prime minister of Australia, several U.S. Secretaries of Education, and New York Gov. Kathy Hochul. The P-TECH model was further elevated by IBM CEO Ginni Rometty, who spoke about P-TECH frequently at international tech conferences, the National Governor&#8217;s Association, and national gatherings with students at her side, while encouraging senior executives to introduce the model to government leaders. In 2016, Harvard Business School professor Rosabeth Moss Kanter completed a <a href="https://www.hbs.edu/faculty/Pages/item.aspx?num=45619" target="_blank" rel="noopener">three-part case study</a> of the model. By 2018, the State University of New York embedded the program in all 30 of its community colleges.</p>
 
       <h3>Today</h3>
 
@@ -821,7 +833,11 @@ figcaption .credit{display:block;font-family:'IBM Plex Mono',monospace;font-size
           <h2>Sign up for our newsletter</h2>
           <p style="color:#BFD0EC">Be first to hear news from the Alliance and stories from across the network.</p>
         </div>
-        <form class="mc-form" data-source="get-involved" novalidate>
+        <form class="mc-form" data-source="get-involved"
+              action="https://ptech.us3.list-manage.com/subscribe/post"
+              method="post" target="mcFrame" novalidate>
+          <input type="hidden" name="u" value="4e294fd788f48778ee6267dd9">
+          <input type="hidden" name="id" value="f5afcaa44f">
           <input type="email" name="EMAIL" required placeholder="Email address" aria-label="Email address">
           <button class="btn gold" type="submit">Sign up</button>
           <div style="position:absolute;left:-5000px" aria-hidden="true"><input type="text" name="b_4e294fd788f48778ee6267dd9_f5afcaa44f" tabindex="-1" value=""></div>
@@ -832,6 +848,32 @@ figcaption .credit{display:block;font-family:'IBM Plex Mono',monospace;font-size
   </section>
 </div>
 </main>
+<iframe name="mcFrame" title="Newsletter signup" style="position:absolute;width:0;height:0;border:0;left:-9999px" aria-hidden="true"></iframe>
+
+
+<!-- ============================================== QUICK SIGNUP -->
+<div class="modal-backdrop" id="joinModal" role="dialog" aria-modal="true" aria-labelledby="jmTitle">
+  <div class="modal" role="document" style="max-width:480px">
+    <button class="modal-close" id="jmClose" aria-label="Close">&times;</button>
+    <div class="modal-head">
+      <span class="eyebrow">Stay Connected</span>
+      <h2 id="jmTitle">Join our mailing list</h2>
+      <p>News from the network, research briefs, and stories from students six years ahead of the curve.</p>
+    </div>
+    <div class="modal-body">
+      <form class="mc-form quick" data-source="hero"
+            action="https://ptech.us3.list-manage.com/subscribe/post"
+            method="post" target="mcFrame" novalidate>
+        <input type="hidden" name="u" value="4e294fd788f48778ee6267dd9">
+        <input type="hidden" name="id" value="f5afcaa44f">
+        <input type="email" name="EMAIL" required placeholder="Email address" aria-label="Email address">
+        <button class="btn" type="submit">Sign up</button>
+        <div style="position:absolute;left:-5000px" aria-hidden="true"><input type="text" name="b_4e294fd788f48778ee6267dd9_f5afcaa44f" tabindex="-1" value=""></div>
+        <p class="mc-msg" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</div>
 
 <!-- ============================================== AUDIENCE MODALS -->
 <div class="modal-backdrop" id="audienceModal" role="dialog" aria-modal="true" aria-labelledby="amTitle">
@@ -846,18 +888,6 @@ figcaption .credit{display:block;font-family:'IBM Plex Mono',monospace;font-size
       <p id="amBody"></p>
       <div class="modal-actions">
         <a class="btn" id="amSignup" href="#" target="_blank" rel="noopener">Sign up for updates</a>
-        <button class="alt" id="amEmail" type="button" aria-expanded="false" aria-controls="amMailPanel">Or email us directly</button>
-      </div>
-      <div class="mailpanel" id="amMailPanel" hidden>
-        <div class="mailrow">
-          <code id="amAddr">contact@ptech.org</code>
-          <button class="copybtn" id="amCopy" type="button">Copy</button>
-        </div>
-        <div class="maillinks">
-          <a id="amGmail"  href="#" target="_blank" rel="noopener">Gmail</a>
-          <a id="amOutlook" href="#" target="_blank" rel="noopener">Outlook on the web</a>
-          <a id="amDefault" href="#">Default mail app</a>
-        </div>
       </div>
       <p class="modal-note">We&#8217;ll only use your details to follow up about P-TECH. You can unsubscribe at any time.</p>
     </div>
@@ -1011,105 +1041,70 @@ function drawUS(){
   }).catch(() => { host.innerHTML = '<p style="color:var(--muted)">Map loading…</p>'; });
 }
 
-/* ================= Mailchimp newsletter signup ================= */
-/* Audience: P-TECH Alliance (us3) — u=4e294fd788f48778ee6267dd9, id=f5afcaa44f
-   Mailchimp blocks plain fetch() cross-origin, so we use its JSONP endpoint (post-json + c=callback). */
-const MC_ENDPOINT = 'https://ptech.us3.list-manage.com/subscribe/post-json?u=4e294fd788f48778ee6267dd9&id=f5afcaa44f';
-const MC_HONEYPOT = 'b_4e294fd788f48778ee6267dd9_f5afcaa44f';
-const MC_HOSTED = 'https://eepurl.com/yU9dCv5f8z';
-
-function mcSubmit(form){
-  const emailEl = form.querySelector('input[name="EMAIL"]');
-  const msg = form.querySelector('.mc-msg');
-  const email = (emailEl.value || '').trim();
-  msg.className = 'mc-msg';
-
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    msg.textContent = 'Please enter a valid email address.';
-    msg.classList.add('err');
-    emailEl.focus();
-    return;
-  }
-
-  form.classList.add('sending');
-  msg.textContent = 'Signing you up…';
-
-  const cb = 'mcCallback_' + Date.now();
-  const params = new URLSearchParams({
-    EMAIL: email,
-    SOURCE: form.dataset.source || 'website',
-    [MC_HONEYPOT]: form.querySelector('input[name="' + MC_HONEYPOT + '"]').value || '',
-    c: cb
-  });
-
-  const script = document.createElement('script');
-  let settled = false;
-
-  function finish(ok, text){
-    if (settled) return; settled = true;
-    clearTimeout(timer);
-    delete window[cb];
-    script.remove();
-    form.classList.remove('sending');
-    msg.textContent = text;
-    msg.classList.add(ok ? 'ok' : 'err');
-    if (ok) { emailEl.value = ''; emailEl.disabled = true; form.querySelector('button').disabled = true; }
-  }
-
-  window[cb] = function(data){
-    if (data && data.result === 'success') {
-      finish(true, 'Thanks — check your inbox to confirm your subscription.');
-    } else {
-      /* Mailchimp returns HTML in msg; strip tags and handle the already-subscribed case gracefully. */
-      const raw = (data && data.msg ? String(data.msg) : '').replace(/<[^>]*>/g, '');
-      if (/already subscribed/i.test(raw)) finish(true, "You're already on our list — thanks!");
-      else finish(false, raw || 'Something went wrong. Please email contact@ptech.org.');
-    }
-  };
-
-  /* Fallback: preview iframes, ad blockers, and strict CSP can block the cross-origin
-     script. Offer the hosted Mailchimp form so signup always has a working path. */
-  const fallback = () => {
-    if (settled) return; settled = true;
-    clearTimeout(timer); delete window[cb]; script.remove();
-    form.classList.remove('sending');
-    msg.className = 'mc-msg err';
-    msg.innerHTML = 'Signup didn\'t load here. <a href="' + MC_HOSTED + '" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">Open the signup form</a> or email contact@ptech.org.';
-  };
-  const timer = setTimeout(fallback, 8000);
-  script.onerror = fallback;
-
-  script.src = MC_ENDPOINT + '&' + params.toString();
-  document.body.appendChild(script);
-}
+/* ================= Newsletter signup =================
+   Submits straight to Mailchimp with a normal form POST into a hidden frame.
+   Form posts are not subject to the cross-origin restrictions that block
+   script-based signup, so this works even with ad/privacy blockers running,
+   and the visitor never leaves the page. */
 
 document.querySelectorAll('.mc-form').forEach(form => {
-  form.addEventListener('submit', e => { e.preventDefault(); mcSubmit(form); });
+  const emailEl = form.querySelector('input[name="EMAIL"]');
+  const msg     = form.querySelector('.mc-msg');
+  const btn     = form.querySelector('button[type="submit"]');
+
+  form.addEventListener('submit', e => {
+    const email = (emailEl.value || '').trim();
+    msg.className = 'mc-msg';
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      e.preventDefault();
+      msg.textContent = 'Please enter a valid email address.';
+      msg.classList.add('err');
+      emailEl.focus();
+      return;
+    }
+
+    /* Let the POST proceed into the hidden frame, then confirm inline.
+       The response is cross-origin so it cannot be read; a successful POST
+       is assumed once the request has been sent. */
+    msg.textContent = 'Signing you up\u2026';
+    setTimeout(() => {
+      msg.textContent = 'Thanks \u2014 check your inbox to confirm your subscription.';
+      msg.classList.add('ok');
+      emailEl.value = '';
+      emailEl.disabled = true;
+      if (btn) btn.disabled = true;
+    }, 900);
+  });
 });
 
-/* ================= Hero photo carousel ================= */
+/* ---- Hero "Join our mailing list" opens a one-field capture ---- */
 (function(){
-  const media = document.getElementById('heroMedia');
-  if (!media) return;
-  const slides = [...media.querySelectorAll('.slide')];
-  const dots = [...media.querySelectorAll('.hero-dots button')];
-  let i = 0, timer = null;
-  const DUR = 5500;
+  const backdrop = document.getElementById('joinModal');
+  const trigger  = document.getElementById('heroJoin');
+  if (!backdrop || !trigger) return;
+  const closeBtn = document.getElementById('jmClose');
+  const field    = backdrop.querySelector('input[name="EMAIL"]');
+  let lastFocus = null;
 
-  function show(n){
-    i = (n + slides.length) % slides.length;
-    slides.forEach((s,k) => s.classList.toggle('on', k === i));
-    dots.forEach((d,k) => d.setAttribute('aria-selected', k === i));
+  function open(){
+    lastFocus = document.activeElement;
+    backdrop.classList.add('open');
+    document.body.classList.add('modal-open');
+    requestAnimationFrame(() => { backdrop.classList.add('shown'); field.focus(); });
   }
-  function play(){ stop(); timer = setInterval(() => show(i+1), DUR); }
-  function stop(){ if (timer) clearInterval(timer); timer = null; }
-
-  dots.forEach((d,k) => d.addEventListener('click', () => { show(k); play(); }));
-  media.addEventListener('mouseenter', stop);
-  media.addEventListener('mouseleave', play);
-  document.addEventListener('visibilitychange', () => document.hidden ? stop() : play());
-
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) play();
+  function close(){
+    backdrop.classList.remove('shown');
+    document.body.classList.remove('modal-open');
+    setTimeout(() => backdrop.classList.remove('open'), 220);
+    if (lastFocus) lastFocus.focus();
+  }
+  trigger.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) close(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && backdrop.classList.contains('open')) close();
+  });
 })();
 
 /* ================= Audience modals (Get Involved) ================= */
@@ -1122,14 +1117,13 @@ const MC_FORM = 'https://ptech.us3.list-manage.com/subscribe?u=4e294fd788f48778e
    If it reads MMERGE6 (or similar), change this one string to match. The field must
    also be set to VISIBLE on signup forms for the pre-fill to reach it. */
 const MC_AUDIENCE_TAG = 'AUDIENCE';
-const CONTACT_EMAIL = 'contact@ptech.org';
 
 const AUDIENCES = {
   states: {
     title: 'States &amp; Districts',
     sub: 'Launch or expand P-TECH pathways with hands-on Alliance support.',
     body: 'If your state or school district is interested in learning more about P-TECH or creating programs using the model, we connect you with a guided pathway and best practices to direct your efforts. This includes policy frameworks, partner agreements, course curriculum, and scope and sequence materials that enable students to graduate with a full, no-cost associate degree. When you reach roadblocks, we offer assistance drawn from how other P-TECH schools have overcome similar obstacles.',
-    cta: 'Tell us about your district',
+    cta: 'Let\u2019s discuss a collaboration',
     tag: 'States and Districts',
     subject: 'State or district partnership'
   },
@@ -1166,12 +1160,6 @@ const AUDIENCES = {
   const elSub   = document.getElementById('amSub');
   const elBody  = document.getElementById('amBody');
   const elSign  = document.getElementById('amSignup');
-  const elMail  = document.getElementById('amEmail');
-  const elPanel = document.getElementById('amMailPanel');
-  const elCopy  = document.getElementById('amCopy');
-  const elGmail = document.getElementById('amGmail');
-  const elOut   = document.getElementById('amOutlook');
-  const elDef   = document.getElementById('amDefault');
   const elClose = document.getElementById('amClose');
   let lastFocus = null;
 
@@ -1183,15 +1171,6 @@ const AUDIENCES = {
     elBody.innerHTML  = a.body;
     elSign.textContent = a.cta;
     elSign.href = MC_FORM + '&' + MC_AUDIENCE_TAG + '=' + encodeURIComponent(a.tag);
-    /* Email options — no forced mailto handler; the person chooses. */
-    const subj = encodeURIComponent('P-TECH Alliance \u2014 ' + a.subject);
-    elGmail.href = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(CONTACT_EMAIL) + '&su=' + subj;
-    elOut.href   = 'https://outlook.office.com/mail/deeplink/compose?to=' + encodeURIComponent(CONTACT_EMAIL) + '&subject=' + subj;
-    elDef.href   = 'mailto:' + CONTACT_EMAIL + '?subject=' + subj;
-    elPanel.hidden = true;
-    elMail.setAttribute('aria-expanded', 'false');
-    elCopy.textContent = 'Copy';
-    elCopy.classList.remove('done');
     backdrop.classList.add('open');
     document.body.classList.add('modal-open');
     requestAnimationFrame(() => backdrop.classList.add('shown'));
@@ -1210,18 +1189,6 @@ const AUDIENCES = {
     card.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(key); }
     });
-  });
-  elMail.addEventListener('click', () => {
-    const open = elPanel.hidden;
-    elPanel.hidden = !open;
-    elMail.setAttribute('aria-expanded', String(open));
-  });
-  elCopy.addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(CONTACT_EMAIL); }
-    catch { /* clipboard blocked — the address is selectable as a fallback */ }
-    elCopy.textContent = 'Copied';
-    elCopy.classList.add('done');
-    setTimeout(() => { elCopy.textContent = 'Copy'; elCopy.classList.remove('done'); }, 2000);
   });
   elClose.addEventListener('click', close);
   backdrop.addEventListener('click', e => { if (e.target === backdrop) close(); });
