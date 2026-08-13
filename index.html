@@ -1163,6 +1163,32 @@ document.querySelectorAll('.mc-form').forEach(form => {
   });
 })();
 
+/* ================= Hero photo carousel ================= */
+(function(){
+  const media = document.getElementById('heroMedia');
+  if (!media) return;
+  const slides = [...media.querySelectorAll('.slide')];
+  const dots   = [...media.querySelectorAll('.hero-dots button')];
+  if (slides.length < 2) return;
+  let i = 0, timer = null;
+  const DUR = 5500;
+
+  function show(n){
+    i = (n + slides.length) % slides.length;
+    slides.forEach((s,k) => s.classList.toggle('on', k === i));
+    dots.forEach((d,k) => d.setAttribute('aria-selected', k === i));
+  }
+  function play(){ stop(); timer = setInterval(() => show(i+1), DUR); }
+  function stop(){ if (timer) clearInterval(timer); timer = null; }
+
+  dots.forEach((d,k) => d.addEventListener('click', () => { show(k); play(); }));
+  media.addEventListener('mouseenter', stop);
+  media.addEventListener('mouseleave', play);
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : play());
+
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) play();
+})();
+
 /* ================= Audience modals (Get Involved) ================= */
 /* Mailchimp hosted form. The AUDIENCE merge field is pre-filled from the URL so each
    window's signups land segmented. Create a merge field with tag AUDIENCE in
